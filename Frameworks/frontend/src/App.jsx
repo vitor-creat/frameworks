@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-
+import Modal from "./componentes/modal.jsx"
 
 const produtos = [
   { id: 1, nome: "Notebook Pro 15", categoria: "Informática", preco: 2499.90, estoque: 8, emoji: "💻" },
@@ -156,12 +156,16 @@ function Carrinho() {
 }
 
 function Admin() {
+  const [openModal, setOpenModal] = useState(false)
   return (
     <section className="section">
       <div className="admin-head">
         <div><span className="eyebrow">ADMINISTRAÇÃO</span><h1>Painel administrativo</h1></div>
-        <button className="btn primary" onClick={() => alert("TODO - ALUNO: abrir formulário de produto")}>+ Novo produto</button>
+        <button className="btn primary" onClick={() => setOpenModal(true)}>+ Novo produto</button>
       </div>
+      <Modal isOpen={openModal}> 
+        <p>oiiii</p>
+      </Modal>
 
       <div className="stats">
         <div><small>Produtos</small><strong>1.250</strong><span>↑ 12% este mês</span></div>
