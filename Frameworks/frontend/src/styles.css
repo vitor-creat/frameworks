@@ -375,3 +375,13 @@ footer{
 }
 .header nav{display:none}
 }
+
+.form-cadastro{
+    border: black solid 2px;
+    padding: 100px;
+}
+.form-cadastro > input{
+    height: 40px;
+    border-radius: 5px;
+    
+}

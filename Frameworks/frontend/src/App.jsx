@@ -1,7 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Modal from "./componentes/modal.jsx"
-
 const produtos = [
   { id: 1, nome: "Notebook Pro 15", categoria: "Informática", preco: 2499.90, estoque: 8, emoji: "💻" },
   { id: 2, nome: "Mouse sem fio", categoria: "Informática", preco: 89.90, estoque: 25, emoji: "🖱️" },
@@ -44,7 +43,8 @@ function ProductCard({ produto }) {
   );
 }
 
-function Home({ }) {
+function Home({produtos}) { /*Primeira*/
+
   return (
     <>
       <section className="hero">
@@ -75,7 +75,7 @@ function Home({ }) {
   );
 }
 
-function Produtos() {
+function Produtos({produtos}) { 
   return (
     <section className="section">
       <div className="section-heading">
@@ -161,11 +161,32 @@ function Admin() {
     <section className="section">
       <div className="admin-head">
         <div><span className="eyebrow">ADMINISTRAÇÃO</span><h1>Painel administrativo</h1></div>
-        <button className="btn primary" onClick={() => setOpenModal(true)}>+ Novo produto</button>
+        
+        <button className="btn primary" onClick = {() => setOpenModal(true)}>+ Novo produto</button>
+
+          <Modal isOpen={openModal} setOpenModal = {()=> setOpenModal (!openModal) }>
+            // TODO - Fazer o formulario como componente e tratar os dados lá
+            <form action="" method="post" className="form-cadastro" onSubmit={async (e) => {e.preventDefault();}}>
+              <label htmlFor="nomeProduto">nome</label><br />
+              <input type="text"id="nomeProduto"/><br />
+              
+              <label htmlFor="descricaoProduto">descricao</label><br />
+              <input type="text"id="descricaoProduto"/><br />
+
+              <label htmlFor="categoriaProduto">categoria</label><br />
+              <input type="text"id="categoriaProduto"/><br />
+
+              <label htmlFor="precoProduto">preco</label><br />
+              <input type="text"id="precoProduto"/><br />
+
+              <label htmlFor="estoqueProduto">estoque</label><br />
+              <input type="text"id="estoqueProduto"/><br />
+
+              <label htmlFor="imagemProduto">imagem</label><br />
+              <input type="text"id="imagemProduto"/><br />
+            </form>
+          </Modal>
       </div>
-      <Modal isOpen={openModal}> 
-        <p>oiiii</p>
-      </Modal>
 
       <div className="stats">
         <div><small>Produtos</small><strong>1.250</strong><span>↑ 12% este mês</span></div>
@@ -198,16 +219,34 @@ function Admin() {
   );
 }
 
-function App() {
-    return (
+function App() { {/*acrescentar Esta Lógica*/}
+  const [produtos, setProdutos] = useState([]);
+  useEffect(() => {
+    async function carregarProdutos() {
+      try {
+        const resposta = await fetch(
+          "http://localhost:3000/api/produtos"
+        );
+        const dados = await resposta.json();
+        setProdutos(dados);
+      } catch (erro) {
+        console.error(
+          "Erro ao carregar produtos:",
+          erro
+        );
+      }
+    }
+    carregarProdutos();
+  }, []); {/*___________________Até Aqui__________________ */}
+  return (
     <>
       <Header />
 
       <main>
         <Routes>
-          
-          <Route path="/" element={<Home/>}/>
-          <Route path="/produtos" element={<Produtos/>}/>
+          <Route path="/" element={<Home produtos={produtos}/>}/>{/*acrescentar Esta Lógica*/}
+          {/*<Route path="/" element={<Home/>}/> Tirar este */}
+          <Route path="/produtos" element={<Produtos produtos={produtos}/>}/>
           <Route path="/produto/:id" element={<Produto/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/cadastro" element={<Cadastro/>}/>

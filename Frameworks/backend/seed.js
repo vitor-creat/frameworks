@@ -5,6 +5,7 @@ import Product from "./models/Product.js";
 import User from "./models/User.js";
 
 dotenv.config();
+// console.log("URI:", process.env.MONGODB_URI);
 
 const products = [
   { nome: "Notebook Pro 15", categoria: "Informática", preco: 2499.90, estoque: 8, descricao: "Notebook de demonstração." },

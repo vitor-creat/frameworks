@@ -1,4 +1,4 @@
-import { Component, useState } from 'react'
+import React from 'react'
 
 const BACKGROUND_STYLE = {
     position:"fixed",
@@ -6,8 +6,8 @@ const BACKGROUND_STYLE = {
     bottom: "0",
     left: "0",
     right: "0",
-    backgroundColor: "rgb(0,0,0, 0.3)",
-    zIndex: "1000" /*mexe no eixo z fazendo o elemento vir mais para a frente*/ 
+    backgroundColor: "rgba(0,0,0, 0.3)",
+    zIndex: "1000", /*mexe no eixo z fazendo o elemento vir mais para a frente*/ 
 }
 
 const MODAL_STYLE ={
@@ -16,27 +16,23 @@ const MODAL_STYLE ={
     left: "50%",
     transform: "translate(-50%, -50%)",
     padding: "150px",
-    backgroundColor: "#ffff",
+    backgroundColor: "#ffffff",
     borderRadius: "10px",
-    height: "200px"
+    color: "black"
 }
 
-export default function Modal({isOpen, children}){
+export default function Modal({isOpen, setOpenModal, children}){
     if (isOpen) {
         return (
-
-            <div style={BACKGROUND_STYLE}>
-                <div style={MODAL_STYLE} class="modal">
-                    <button class="btn-fechar">
-                        <img src="img/botao-apagar.svg" alt="Fechar" />
-                    </button>               
-
+        <div style={BACKGROUND_STYLE}>
+                <div style={MODAL_STYLE} className="modal">
+                    <div>{children}</div>
+                    <button className='btn-fechar' onClick={setOpenModal}> fechar </button>
                 </div>
             </div>
-
-
         )
     }
 
     return null
+
 }

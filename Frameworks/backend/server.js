@@ -1,241 +1,54 @@
-import { Link, Route, Routes } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import Product from "./models/Product.js";
 
+dotenv.config();
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const produtos = [
-  { id: 1, nome: "Notebook Pro 15", categoria: "Informática", preco: 2499.90, estoque: 8, emoji: "💻" },
-  { id: 2, nome: "Mouse sem fio", categoria: "Informática", preco: 89.90, estoque: 25, emoji: "🖱️" },
-  { id: 3, nome: "Teclado mecânico", categoria: "Informática", preco: 199.90, estoque: 12, emoji: "⌨️" },
-  { id: 4, nome: "Fone Bluetooth", categoria: "Eletrônicos", preco: 149.90, estoque: 18, emoji: "🎧" },
-  { id: 5, nome: "Smartphone", categoria: "Eletrônicos", preco: 1299.90, estoque: 6, emoji: "📱" },
-  { id: 6, nome: "Monitor 24", categoria: "Informática", preco: 899.90, estoque: 10, emoji: "🖥️" }
-];
+app.use(cors());
+app.use(express.json());
 
-function Header() {
-  return (
-    <header className="header">
-      <Link className="logo" to="/">MeuSite<span>Vendas</span></Link>
-      <nav>
-        <Link to="/">Início</Link>
-        <Link to="/produtos">Produtos</Link>
-        <Link to="/admin">Admin</Link>
-      </nav>
-      <div className="header-actions">
-        <Link to="/login">Entrar</Link>
-        <Link className="cart-button" to="/carrinho">🛒 Carrinho <b>0</b></Link>
-      </div>
-    </header>
-  );
-}
+const connectiondb = async () => { await mongoose.connect(process.env.MONGODB_URI); console.log("Banco Conectado")}
 
-function ProductCard({ produto }) {
-  return (
-    <article className="product-card">
-      <div className="product-image">{produto.emoji}</div>
-      <span className="badge">{produto.categoria}</span>
-      <h3>{produto.nome}</h3>
-      <p className="price">R$ {produto.preco.toFixed(2).replace(".", ",")}</p>
-      <small>{produto.estoque} unidades disponíveis</small>
-      <div className="card-actions">
-        <Link className="btn secondary" to={`/produto/${produto.id}`}>Ver produto</Link>
-        <button className="btn primary" onClick={() => alert("TODO - ALUNO: implementar carrinho")}>Comprar</button>
-      </div>
-    </article>
-  );
-}
+app.get("/", async (req, res) => {
+  res.json({
+    projeto: "SobrouVendi",
+    status: "API funcionando",
+    desafio: "TODO - ALUNO: conectar MongoDB e implementar regras."
+  });
+});
 
-function Home({produtos}) { /*Primeira*/
+app.get("/api/produtos", async (req, res) => {
+  try {
+    const produtos = await Product.find()
+    res.status(200).json(produtos)
+  } catch (erro) {
+    // console.error(erro);
+    res.status(500).json({ mensagem: "Erro ao buscar produtos", error: erro.message })
+  }
+});
 
-  return (
-    <>
-      <section className="hero">
-        <div>
-          <span className="eyebrow">PROJETO INTEGRADOR • FRAMEWORKS WEB</span>
-          <h1>Seu marketplace.<br/><strong>Seu projeto.</strong></h1>
-          <p>Uma aplicação de vendas pronta para você aprender desenvolvendo. O desafio é transformar esta base em um e-commerce completo.</p>
-          <Link className="btn primary large" to="/produtos">Explorar produtos</Link>
-        </div>
-        <div className="hero-art">🛍️</div>
-      </section>
+app.post("/api/auth/login", async (req, res) => {
+  // TODO - ALUNO: buscar usuário, comparar senha com bcrypt e emitir JWT.
+  res.status(501).json({ erro: "Login ainda não implementado pelo aluno." });
+});
 
-      <section className="section">
-        <div className="section-heading">
-          <div><span className="eyebrow">DESTAQUES</span><h2>Produtos em destaque</h2></div>
-          <Link to="/produtos">Ver todos →</Link>
-        </div>
-        <div className="product-grid">
-          {produtos.slice(0, 4).map(p => <ProductCard key={p.id} produto={p}/>)}
-        </div>
-      </section>
+app.post("/api/auth/register", async (req, res) => {
+  // TODO - ALUNO: validar dados, criptografar senha e salvar usuário.
+  res.status(501).json({ erro: "Cadastro ainda não implementado pelo aluno." });
+});
 
-      <section className="challenge-banner">
-        <div><span className="eyebrow">DESAFIO DO ALUNO</span><h2>Este site já está pronto. Agora faça ele funcionar.</h2></div>
-        <p>CRUD • MongoDB • API • Login • Carrinho • Pedidos • Estoque • Paginação • Hospedagem</p>
-      </section>
-    </>
-  );
-}
+app.post("/api/pedidos", async (req, res) => {
+  // TODO - ALUNO: criar pedido, validar estoque e atualizar produtos.
+  res.status(501).json({ erro: "Pedidos ainda não implementados." });
+});
 
-function Produtos({produtos}) { 
-  return (
-    <section className="section">
-      <div className="section-heading">
-        <div><span className="eyebrow">CATÁLOGO</span><h2>Todos os produtos</h2></div>
-        <input className="search" placeholder="🔎 Buscar produto..." onChange={() => {}} />
-      </div>
-      <div className="filters">
-        <button>Todos</button><button>Informática</button><button>Eletrônicos</button>
-        <select><option>Ordenar por</option><option>Menor preço</option><option>Maior preço</option></select>
-      </div>
-      <div className="product-grid">
-        {produtos.map(p => <ProductCard key={p.id} produto={p}/>)}
-      </div>
-      <div className="pagination">← Anterior &nbsp; <b>1</b> 2 3 4 &nbsp; Próxima →</div>
-    </section>
-  );
-}
+app.listen(PORT, () => {
+  console.log(`SobrouVendi API: http://localhost:${PORT}`);
+  connectiondb()
+});
 
-function Produto() {
-  return (
-    <section className="section product-detail">
-      <div className="detail-image">💻</div>
-      <div>
-        <span className="badge">Informática</span>
-        <h1>Notebook Pro 15</h1>
-        <p className="price big">R$ 2.499,90</p>
-        <p>Notebook de demonstração do projeto. Esta tela está pronta para o aluno integrar com a API e o banco de dados.</p>
-        <p><b>Estoque:</b> 8 unidades</p>
-        <button className="btn primary large" onClick={() => alert("TODO - ALUNO: adicionar ao carrinho")}>Adicionar ao carrinho</button>
-      </div>
-    </section>
-  );
-}
-
-function Login() {
-  return (
-    <section className="form-page">
-      <div className="form-card">
-        <span className="eyebrow">ÁREA DO CLIENTE</span>
-        <h1>Entrar</h1>
-        <label>E-mail<input type="email" placeholder="cliente@email.com"/></label>
-        <label>Senha<input type="password" placeholder="••••••••"/></label>
-        <button className="btn primary large" onClick={() => alert("TODO - ALUNO: autenticar com API/JWT")}>Entrar</button>
-        <p>Não possui conta? <Link to="/cadastro">Criar cadastro</Link></p>
-      </div>
-    </section>
-  );
-}
-
-function Cadastro() {
-  return (
-    <section className="form-page">
-      <div className="form-card">
-        <span className="eyebrow">NOVO CLIENTE</span>
-        <h1>Criar conta</h1>
-        <label>Nome<input placeholder="Seu nome"/></label>
-        <label>E-mail<input type="email" placeholder="voce@email.com"/></label>
-        <label>Senha<input type="password" placeholder="••••••••"/></label>
-        <button className="btn primary large" onClick={() => alert("TODO - ALUNO: cadastrar usuário no MongoDB")}>Cadastrar</button>
-      </div>
-    </section>
-  );
-}
-
-function Carrinho() {
-  return (
-    <section className="section">
-      <span className="eyebrow">COMPRA</span>
-      <h1>Seu carrinho</h1>
-      <div className="empty-cart">
-        <div>🛒</div>
-        <h2>Carrinho vazio</h2>
-        <p>TODO - ALUNO: implementar carrinho, quantidades, subtotal, frete e total.</p>
-        <Link className="btn primary" to="/produtos">Continuar comprando</Link>
-      </div>
-    </section>
-  );
-}
-
-function Admin() {
-  return (
-    <section className="section">
-      <div className="admin-head">
-        <div><span className="eyebrow">ADMINISTRAÇÃO</span><h1>Painel administrativo</h1></div>
-        <button className="btn primary" onClick={() => alert("TODO - ALUNO: abrir formulário de produto")}>+ Novo produto</button>
-      </div>
-
-      <div className="stats">
-        <div><small>Produtos</small><strong>1.250</strong><span>↑ 12% este mês</span></div>
-        <div><small>Pedidos</small><strong>137</strong><span>↑ 8% este mês</span></div>
-        <div><small>Clientes</small><strong>482</strong><span>↑ 15% este mês</span></div>
-        <div><small>Vendas</small><strong>R$ 28.450</strong><span>↑ 21% este mês</span></div>
-      </div>
-
-      <div className="admin-table">
-        <div className="table-title"><h2>Produtos</h2><input className="search" placeholder="Pesquisar..."/></div>
-        {produtos.slice(0,5).map(p => (
-          <div className="row" key={p.id}>
-            <span>{p.emoji} <b>{p.nome}</b></span>
-            <span>R$ {p.preco.toFixed(2).replace(".", ",")}</span>
-            <span>{p.estoque}</span>
-            <span><button className="mini" onClick={() => alert("TODO - ALUNO: editar produto")}>Editar</button><button className="mini danger" onClick={() => alert("TODO - ALUNO: excluir produto")}>Excluir</button></span>
-          </div>
-        ))}
-      </div>
-
-      <div className="implementation">
-        <h2>O que falta implementar</h2>
-        <div className="todo-grid">
-          <span>□ CRUD de produtos</span><span>□ MongoDB</span><span>□ Login/JWT</span>
-          <span>□ Carrinho</span><span>□ Pedidos</span><span>□ Estoque</span>
-          <span>□ Filtros</span><span>□ Paginação</span><span>□ Validações</span>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function App() { {/*acrescentar Esta Lógica*/}
-  const [produtos, setProdutos] = useState([]);
-  useEffect(() => {
-    async function carregarProdutos() {
-      try {
-        const resposta = await fetch(
-          "http://localhost:3000/api/produtos"
-        );
-        const dados = await resposta.json();
-        setProdutos(dados);
-      } catch (erro) {
-        console.error(
-          "Erro ao carregar produtos:",
-          erro
-        );
-      }
-    }
-    carregarProdutos();
-  }, []); {/*___________________Até Aqui__________________ */}
-  return (
-    <>
-      <Header />
-
-      <main>
-        <Routes>
-          <Route path="/" element={<Home produtos={produtos}/>}/>{/*acrescentar Esta Lógica*/}
-          {/*<Route path="/" element={<Home/>}/> Tirar este */}
-          <Route path="/produtos" element={<Produtos produtos={produtos}/>}/>
-          <Route path="/produto/:id" element={<Produto/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/cadastro" element={<Cadastro/>}/>
-          <Route path="/carrinho" element={<Carrinho/>}/>
-          <Route path="/admin" element={<Admin/>}/>
-        </Routes>
-      </main>
-
-      <footer>
-        <b>SobrouVendi</b> • Projeto Integrador de Frameworks Web
-      </footer>
-    </>
-  );
-}
-
-export default App;
+// TODO - ALUNO: conectar MongoDB com mongoose.connect(process.env.MONGODB_URI).
