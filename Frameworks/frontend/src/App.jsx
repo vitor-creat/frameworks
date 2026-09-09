@@ -44,7 +44,8 @@ function ProductCard({ produto }) {
   );
 }
 
-function Home({ }) {
+function Home({produtos}) { /*Primeira*/
+
   return (
     <>
       <section className="hero">
@@ -75,7 +76,7 @@ function Home({ }) {
   );
 }
 
-function Produtos() {
+function Produtos({produtos}) { 
   return (
     <section className="section">
       <div className="section-heading">
@@ -155,13 +156,91 @@ function Carrinho() {
   );
 }
 
-function Admin() {
+function Admin({produtos}) {
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [preco, setPreco] = useState("");
+  const [estoque, setEstoque] = useState("");
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   return (
     <section className="section">
       <div className="admin-head">
         <div><span className="eyebrow">ADMINISTRAÇÃO</span><h1>Painel administrativo</h1></div>
-        <button className="btn primary" onClick={() => alert("TODO - ALUNO: abrir formulário de produto")}>+ Novo produto</button>
+        {/*<button className="btn primary" onClick={() => alert("TODO - ALUNO: abrir formulário de produto")}>+ Novo produto</button>*/}
+        {/*<button className="btn primary" onClick={() => setMostrarFormulario(!mostrarFormulario)}> {mostrarFormulario ? "Fechar formulário" : "+ Novo produto"} </button>*/}
+        <Link to="/admin/produtos/novo"className="btn primary"
+>
+  + Novo produto
+</Link>
+      
       </div>
+       
+       
+      
+      {mostrarFormulario && (
+  <div className="form-card">
+
+    <h2>Cadastrar novo produto</h2>
+
+    <label>
+      Nome
+      <input
+        type="text"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+        placeholder="Nome do produto"
+      />
+    </label>
+
+    <label>
+      Descrição
+      <input
+        type="text"
+        value={descricao}
+        onChange={(e) => setDescricao(e.target.value)}
+        placeholder="Descrição do produto"
+      />
+    </label>
+
+    <label>
+      Categoria
+      <input
+        type="text"
+        value={categoria}
+        onChange={(e) => setCategoria(e.target.value)}
+        placeholder="Categoria"
+      />
+    </label>
+
+    <label>
+      Preço
+      <input
+        type="number"
+        step="0.01"
+        value={preco}
+        onChange={(e) => setPreco(e.target.value)}
+        placeholder="Preço"
+      />
+    </label>
+
+    <label>
+      Estoque
+      <input
+        type="number"
+        value={estoque}
+        onChange={(e) => setEstoque(e.target.value)}
+        placeholder="Quantidade em estoque"
+      />
+    </label>
+
+    <button className="btn primary">
+      Cadastrar produto
+    </button>
+
+  </div>
+)}
+      
 
       <div className="stats">
         <div><small>Produtos</small><strong>1.250</strong><span>↑ 12% este mês</span></div>
@@ -173,7 +252,7 @@ function Admin() {
       <div className="admin-table">
         <div className="table-title"><h2>Produtos</h2><input className="search" placeholder="Pesquisar..."/></div>
         {produtos.slice(0,5).map(p => (
-          <div className="row" key={p.id}>
+          <div className="row" key={p._id}>
             <span>{p.emoji} <b>{p.nome}</b></span>
             <span>R$ {p.preco.toFixed(2).replace(".", ",")}</span>
             <span>{p.estoque}</span>
@@ -193,22 +272,130 @@ function Admin() {
     </section>
   );
 }
+{/*Nova Lógica para abrir nova aba e acrecentar proditos*/}
+function NovoProduto() {
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [preco, setPreco] = useState("");
+  const [estoque, setEstoque] = useState("");
 
-function App() {
-    return (
+  return (
+    <section className="section">
+      <div className="form-card">
+
+        <span className="eyebrow">ADMINISTRAÇÃO</span>
+        <h1>Cadastrar novo produto</h1>
+
+        <label>
+          Nome
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            placeholder="Nome do produto"
+          />
+        </label>
+
+        <label>
+      Descrição
+      <input
+        type="text"
+        value={descricao}
+        onChange={(e) => setDescricao(e.target.value)}
+        placeholder="Descrição do produto"
+      />
+    </label>
+
+        <label>
+          Categoria
+          <input
+            type="text"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+            placeholder="Categoria"
+          />
+        </label>
+
+        <label>
+          Preço
+          <input
+            type="number"
+            step="0.01"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            placeholder="Preço"
+          />
+        </label>
+
+        <label>
+          Estoque
+          <input
+            type="number"
+            value={estoque}
+            onChange={(e) => setEstoque(e.target.value)}
+            placeholder="Quantidade em estoque"
+          />
+        </label>
+
+        <div className="form-actions">
+
+          <Link
+            to="/admin"
+            className="btn"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            className="btn primary"
+          >
+            Cadastrar produto
+          </button>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
+   {/*Final da lógica acrecentar produtos*/}
+
+function App() { {/*acrescentar Esta Lógica*/}
+  const [produtos, setProdutos] = useState([]);
+  useEffect(() => {
+    async function carregarProdutos() {
+      try {
+        const resposta = await fetch(
+          "http://localhost:3000/api/produtos"
+        );
+        const dados = await resposta.json();
+        setProdutos(dados);
+      } catch (erro) {
+        console.error(
+          "Erro ao carregar produtos:",
+          erro
+        );
+      }
+    }
+    carregarProdutos();
+  }, []); {/*___________________Até Aqui__________________ */}
+  return (
     <>
       <Header />
 
       <main>
         <Routes>
-          
-          <Route path="/" element={<Home/>}/>
-          <Route path="/produtos" element={<Produtos/>}/>
+          <Route path="/" element={<Home produtos={produtos}/>}/>{/*acrescentar Esta Lógica*/}
+          {/*<Route path="/" element={<Home/>}/> Tirar este */}
+          <Route path="/produtos" element={<Produtos produtos={produtos}/>}/>
           <Route path="/produto/:id" element={<Produto/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/cadastro" element={<Cadastro/>}/>
           <Route path="/carrinho" element={<Carrinho/>}/>
-          <Route path="/admin" element={<Admin/>}/>
+          <Route path="/admin" element={<Admin produtos={produtos}/>}/>
+          <Route path="/admin/produtos/novo"element={<NovoProduto />}
+/>
         </Routes>
       </main>
 
