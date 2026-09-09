@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 
@@ -273,12 +273,65 @@ function Admin({produtos}) {
   );
 }
 {/*Nova Lógica para abrir nova aba e acrecentar proditos*/}
-function NovoProduto() {
+function NovoProduto({setProdutos}) {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [categoria, setCategoria] = useState("");
   const [preco, setPreco] = useState("");
   const [estoque, setEstoque] = useState("");
+  const navigate = useNavigate();
+
+  async function cadastrarProduto() {
+  try {
+    const novoProduto = {
+      nome,
+      descricao,
+      categoria,
+      preco: Number(preco),
+      estoque: Number(estoque),
+      ativo: true
+    };
+
+    const resposta = await fetch(
+      "http://localhost:3000/api/produtos",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(novoProduto)
+      }
+    );
+
+    const dados = await resposta.json();
+    if (!resposta.ok) {
+  alert("Erro ao cadastrar produto.");
+  return;
+}
+
+setProdutos((produtosAtuais) => [
+  ...produtosAtuais,
+  dados
+]);
+
+alert("Produto cadastrado com sucesso!");
+
+
+
+setNome("");
+setDescricao("");
+setCategoria("");
+setPreco("");
+setEstoque("");
+
+navigate("/admin");
+
+    console.log("Resposta da API:", dados);
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar produto:", erro);
+  }
+}
 
   return (
     <section className="section">
@@ -348,9 +401,10 @@ function NovoProduto() {
           </Link>
 
           <button
-            className="btn primary"
+          className="btn primary"
+          onClick={cadastrarProduto}
           >
-            Cadastrar produto
+          Cadastrar produto
           </button>
 
         </div>
@@ -394,8 +448,7 @@ function App() { {/*acrescentar Esta Lógica*/}
           <Route path="/cadastro" element={<Cadastro/>}/>
           <Route path="/carrinho" element={<Carrinho/>}/>
           <Route path="/admin" element={<Admin produtos={produtos}/>}/>
-          <Route path="/admin/produtos/novo"element={<NovoProduto />}
-/>
+          <Route path="/admin/produtos/novo"element={<NovoProduto setProdutos={setProdutos} />}/>
         </Routes>
       </main>
 
