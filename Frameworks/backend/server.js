@@ -28,14 +28,6 @@ app.get("/", (req, res) => {
   });
 });
 
-/*app.get("/api/produtos", async (req, res) => {
-  // TODO - ALUNO: trocar resposta temporária por consulta no MongoDB.
-  res.json([
-    { id: 1, nome: "Notebook Pro 15", categoria: "Informática", preco: 2499.90, estoque: 8 },
-    { id: 2, nome: "Mouse sem fio", categoria: "Informática", preco: 89.90, estoque: 25 }
-  ]);
-});*/
-
 app.get("/api/produtos", async (req, res) => {
   try {
     const produtos = await Product.find({ ativo: true });
@@ -51,21 +43,62 @@ app.get("/api/produtos", async (req, res) => {
 /*Acrescentar ao Codigo esta Lógica para agora cadastrar produto no site*/
 app.post("/api/produtos", async (req, res) => {
   try {
-
     const produto = await Product.create(req.body);
-
     res.status(201).json(produto);
-
   } catch (erro) {
-
     console.error(erro);
-
     res.status(400).json({
       erro: "Erro ao cadastrar produto."
     });
-
   }
 }); /*Até Aqui */
+
+/*Acrescentar ao Codigo esta Lógica para cadastrar Editar produtos no site*/
+
+app.get("/api/produtos/:id", async (req, res) => {
+  try {
+    const produto = await Product.findById(req.params.id);
+    if (!produto) {
+      return res.status(404).json({
+        erro: "Produto não encontrado."
+      });
+    }
+    res.json(produto);
+  } catch (erro) {
+    console.error("Erro ao buscar produto:", erro);
+    res.status(400).json({
+      erro: "Erro ao buscar produto."
+    });
+  }
+});
+
+
+/* Editar produto */
+
+
+app.put("/api/produtos/:id", async (req, res) => {
+  try {
+    const produtoAtualizado = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+    if (!produtoAtualizado) {
+      return res.status(404).json({
+        erro: "Produto não encontrado."
+      });
+    }
+    res.json(produtoAtualizado);
+  } catch (erro) {
+    console.error("Erro ao atualizar produto:", erro);
+    res.status(400).json({
+      erro: "Erro ao atualizar produto."
+    });
+  }
+});
 
 
 app.post("/api/auth/login", async (req, res) => {
