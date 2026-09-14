@@ -1,3 +1,6 @@
+/*ETAPA 1
+ macrescentar useParams aqui.
+*/
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
@@ -157,6 +160,7 @@ function Carrinho() {
 }
 
 function Admin({produtos}) {
+  /*Estado do produto Armazena dos dados do formulario*/
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [categoria, setCategoria] = useState("");
@@ -172,17 +176,11 @@ function Admin({produtos}) {
         <Link to="/admin/produtos/novo"className="btn primary"
 >
   + Novo produto
-</Link>
-      
-      </div>
-       
-       
-      
+</Link>      
+      </div>    
       {mostrarFormulario && (
   <div className="form-card">
-
     <h2>Cadastrar novo produto</h2>
-
     <label>
       Nome
       <input
@@ -192,7 +190,6 @@ function Admin({produtos}) {
         placeholder="Nome do produto"
       />
     </label>
-
     <label>
       Descrição
       <input
@@ -202,7 +199,6 @@ function Admin({produtos}) {
         placeholder="Descrição do produto"
       />
     </label>
-
     <label>
       Categoria
       <input
@@ -212,7 +208,6 @@ function Admin({produtos}) {
         placeholder="Categoria"
       />
     </label>
-
     <label>
       Preço
       <input
@@ -223,7 +218,6 @@ function Admin({produtos}) {
         placeholder="Preço"
       />
     </label>
-
     <label>
       Estoque
       <input
@@ -233,16 +227,12 @@ function Admin({produtos}) {
         placeholder="Quantidade em estoque"
       />
     </label>
-
     <button className="btn primary">
       Cadastrar produto
     </button>
-
   </div>
-)}
-      
-
-      <div className="stats">
+)}   
+        <div className="stats">
         <div><small>Produtos</small><strong>1.250</strong><span>↑ 12% este mês</span></div>
         <div><small>Pedidos</small><strong>137</strong><span>↑ 8% este mês</span></div>
         <div><small>Clientes</small><strong>482</strong><span>↑ 15% este mês</span></div>
@@ -256,7 +246,30 @@ function Admin({produtos}) {
             <span>{p.emoji} <b>{p.nome}</b></span>
             <span>R$ {p.preco.toFixed(2).replace(".", ",")}</span>
             <span>{p.estoque}</span>
-            <span><button className="mini" onClick={() => alert("TODO - ALUNO: editar produto")}>Editar</button><button className="mini danger" onClick={() => alert("TODO - ALUNO: excluir produto")}>Excluir</button></span>
+            {/* =====================================================
+                DESAFIO 4 — ETAPA 2
+                substituir SOMENTE
+                o botão Editar por um <Link> usando p._id.
+
+                O botão Excluir continua como está.
+                ===================================================== */}
+            <span>
+              <button
+                className="mini"
+                onClick={() =>
+                  alert("Criar o Link de edição")
+                }
+              >
+                Editar
+              </button>
+
+              <button
+                className="mini danger"
+                onClick={() => alert("TODO - ALUNO: excluir produto")}
+              >
+                Excluir
+              </button>
+            </span>
           </div>
         ))}
       </div>
@@ -413,8 +426,225 @@ navigate("/admin");
     </section>
   );
 }
-   {/*Final da lógica acrecentar produtos*/}
+   /*Final da lógica acrecentar produtos*/
 
+
+   /*Rota editar Produtos*/   
+     
+    
+
+/* =========================================================
+   DESAFIO 4 — COMPONENTE EDITAR PRODUTO
+   
+
+   
+
+   
+  
+   ========================================================= */
+
+function EditarProduto({ setProdutos }) {
+
+  /* =======================================================
+     ETAPA 4 — PEGAR O ID DA URL
+
+     
+
+     Objetivo:
+     recuperar o :id da rota usando useParams().
+     ======================================================= */
+
+
+  /* =======================================================
+     
+
+     useState para:
+
+     nome
+     descricao
+     categoria
+     preco
+     estoque
+
+     
+     ======================================================= */
+
+
+  /* =======================================================
+     ETAPA 5 — CRIAR A NAVEGAÇÃO
+
+     
+     usando useNavigate().
+
+     Cole o código aqui.
+     ======================================================= */
+
+
+  /* =======================================================
+     ETAPA 6 — CARREGAR O PRODUTO PELO ID
+
+     useEffect completo.
+
+     Fluxo:
+     URL com ID
+          ↓
+     GET /api/produtos/:id
+          ↓
+     API
+          ↓
+     produto
+          ↓
+     preencher os estados
+
+     
+     ======================================================= */
+
+
+  /* =======================================================
+     ETAPA 9 — SALVAR AS ALTERAÇÕES
+
+     async function salvarAlteracoes() { ... }
+
+     Ela fará:
+
+     1. montar produtoAtualizado
+     2. PUT /api/produtos/:id
+     3. JSON.stringify()
+     4. receber os dados atualizados
+     5. atualizar setProdutos() com map()
+     6. voltar para /admin
+
+     
+     ======================================================= */
+
+
+  /* =======================================================
+     ETAPA 8 — FORMULÁRIO JÁ FORNECIDO
+
+     
+
+     REMOVA o comentário
+     que envolve o bloco abaixo.
+
+     IMPORTANTE:
+     Antes de descomentar, as etapas anteriores precisam
+     estar prontas, pois o formulário usa:
+
+     nome
+     setNome
+     descricao
+     setDescricao
+     categoria
+     setCategoria
+     preco
+     setPreco
+     estoque
+     setEstoque
+     salvarAlteracoes
+     ======================================================= */
+
+  return (
+    <section className="section">
+      <div className="form-card">
+
+        <span className="eyebrow">
+          DESAFIO 4
+        </span>
+
+        <h1>Editar produto</h1>
+
+        <p>
+          O formulário completo já está fornecido neste arquivo.
+          Aguarde a orientação do professor para descomentá-lo.
+        </p>
+
+        <Link to="/admin" className="btn">
+          Voltar ao painel
+        </Link>
+
+        {/*
+        ======================================================
+        FORMULÁRIO DE EDIÇÃO — JÁ PRONTO
+        DESCOMENTAR  ORIENTADO
+        ======================================================
+
+        <label>
+          Nome
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Descrição
+          <input
+            type="text"
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Categoria
+          <input
+            type="text"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Preço
+          <input
+            type="number"
+            step="0.01"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Estoque
+          <input
+            type="number"
+            value={estoque}
+            onChange={(e) => setEstoque(e.target.value)}
+          />
+        </label>
+
+        <div className="form-actions">
+
+          <Link
+            to="/admin"
+            className="btn"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            className="btn primary"
+            onClick={salvarAlteracoes}
+          >
+            Salvar alterações
+          </button>
+
+        </div>
+
+        ======================================================
+        FIM DO FORMULÁRIO DE EDIÇÃO
+        ======================================================
+        */}
+      </div>
+    </section>
+  );
+}
+
+/* FIM DO COMPONENTE EditarProduto */
+
+     
+   
 function App() { {/*acrescentar Esta Lógica*/}
   const [produtos, setProdutos] = useState([]);
   useEffect(() => {
@@ -448,7 +678,23 @@ function App() { {/*acrescentar Esta Lógica*/}
           <Route path="/cadastro" element={<Cadastro/>}/>
           <Route path="/carrinho" element={<Carrinho/>}/>
           <Route path="/admin" element={<Admin produtos={produtos}/>}/>
-          <Route path="/admin/produtos/novo"element={<NovoProduto setProdutos={setProdutos} />}/>
+          <Route
+            path="/admin/produtos/novo"
+            element={<NovoProduto setProdutos={setProdutos} />}
+          />
+
+          {/* =====================================================
+              ETAPA 3
+              Criar aqui a rota:
+
+              /admin/produtos/editar/:id
+
+              e como carregar:
+
+              <EditarProduto setProdutos={setProdutos} />
+
+              Cole a nova <Route> abaixo deste comentário.
+              ===================================================== */}
         </Routes>
       </main>
 
