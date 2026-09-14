@@ -53,6 +53,7 @@ app.post("/api/produtos", async (req, res) => {
   }
 }); /*Até Aqui */
 
+<<<<<<< Updated upstream
 /*Acrescentar ao Codigo esta Lógica para cadastrar Editar produtos no site*/
 
 app.get("/api/produtos/:id", async (req, res) => {
@@ -77,10 +78,27 @@ app.get("/api/produtos/:id", async (req, res) => {
 
 
 app.put("/api/produtos/:id", async (req, res) => {
+=======
+app.get("/api/produtos:id", async (req, res) => {
+  try {
+    const produto = await Product.findById(req.params.id)
+    if (!produto) {
+      return res.status(404).json({erro: "Produto não encontrado"})
+    }
+    res.status(200).json(produto)
+  } catch (erro) {
+    // console.error(erro);
+    res.status(404).json({ mensagem: "Erro ao buscar produtos", error: erro.message })
+  }
+});
+
+app.put("/api/produtos:id", async (req, res) => {
+>>>>>>> Stashed changes
   try {
     const produtoAtualizado = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
+<<<<<<< Updated upstream
       {
         new: true,
         runValidators: true
@@ -100,6 +118,22 @@ app.put("/api/produtos/:id", async (req, res) => {
   }
 });
 
+=======
+    {
+      new: true,
+      runValidators:true
+    }
+  )
+    if (!produtoAtualizado) {
+      return res.status(404).json({erro: "Produto não encontrado"})
+    }
+    res.status(200).json(produto)
+  } catch (erro) {
+    console.error(erro);
+    res.status(404).json({ mensagem: "Erro ao buscar produtos", error: erro.message })
+  }
+});
+>>>>>>> Stashed changes
 
 app.post("/api/auth/login", async (req, res) => {
   // TODO - ALUNO: buscar usuário, comparar senha com bcrypt e emitir JWT.

@@ -1,7 +1,11 @@
+<<<<<<< Updated upstream
 /*ETAPA 1
  macrescentar useParams aqui.
 */
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
+=======
+import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
+>>>>>>> Stashed changes
 import React, { useEffect, useState } from "react";
 
 
