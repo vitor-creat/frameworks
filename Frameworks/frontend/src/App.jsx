@@ -103,11 +103,24 @@ function Produtos({ produtos }) {
   // ETAPA 1 — Criar o controle da página atual e definir quantos
   // produtos serão exibidos por página.
   //
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const produtosPorPagina = 8;
   // ETAPA 2 — Calcular os índices necessários e obter somente os
   // produtos pertencentes à página atual.
   //
+  const indiceUltimoProduto =
+  paginaAtual * produtosPorPagina;
+  const indicePrimeiroProduto =
+  indiceUltimoProduto - produtosPorPagina;
   // ETAPA 4 — Calcular a quantidade total de páginas.
   //
+  const produtosDaPagina = produtosExibidos.slice(
+  indicePrimeiroProduto,
+  indiceUltimoProduto
+  );
+  const totalPaginas = Math.ceil(
+  produtosExibidos.length / produtosPorPagina
+  );
   // ESCREVA A IMPLEMENTAÇÃO ABAIXO:
 
 
@@ -124,32 +137,47 @@ function Produtos({ produtos }) {
           className="search"
           placeholder="🔎 Buscar produto..."
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          onChange={(e) => {
+            setBusca(e.target.value);
+            setPaginaAtual(1);}}
+
         />
       </div>
 
       <div className="filters">
         <button
-          onClick={() => setCategoria("Todos")}
+          onClick={() => {
+            setCategoria("Todos");
+            setPaginaAtual(1)
+          }}
         >
           Todos
         </button>
 
         <button
-          onClick={() => setCategoria("Informática")}
+          onClick={() => {
+            setCategoria("Informática");
+            setPaginaAtual(1);
+          }}
         >
           Informática
         </button>
 
         <button
-          onClick={() => setCategoria("Eletrônicos")}
+          onClick={() => {
+            setCategoria("Eletrônicos");
+            setPaginaAtual(1)
+          }}
         >
           Eletrônicos
         </button>
 
         <select
           value={ordenacao}
-          onChange={(e) => setOrdenacao(e.target.value)}
+          onChange={(e) => {
+            setOrdenacao(e.target.value);
+            setPaginaAtual(1)
+          }}
         >
           <option value="">Ordenar por</option>
           <option value="menor-preco">Menor preço</option>
@@ -157,42 +185,42 @@ function Produtos({ produtos }) {
         </select>
       </div>
 
-      {/*
-        ETAPA 8 — TRATAMENTO DE RESULTADOS
-        Espaço reservado para o aluno implementar a mensagem quando
-        nenhum produto for encontrado.
-      */}
+      {produtosExibidos.length === 0 && (
+      <div className="empty-result">
+      Nenhum produto encontrado com os filtros selecionados.
+      </div>
+      )}
+      {produtosExibidos.length > 0 && (
+      <div className="paginacao">
+      {/* botões da paginação */}
+      </div>
+      )}
 
       <div className="product-grid">
         {/* FILTROS CONCLUÍDOS — esta é a exibição atual do catálogo. */}
-        {produtosExibidos.map((produto) => (
-          <ProductCard
-            key={produto._id || produto.id}
-            produto={produto}
-          />
+        {produtosDaPagina.map((produto) => (
+        <ProductCard
+        key={produto._id || produto.id}
+        produto={produto}
+        />
         ))}
-
-        {/*
-          ETAPA 3 — PAGINAÇÃO
-          O aluno deverá alterar a renderização acima para exibir
-          somente os produtos correspondentes à página atual.
-        */}
       </div>
 
-      {/*
-        ETAPAS 5 e 6 — NAVEGAÇÃO DA PAGINAÇÃO
-        Espaço reservado para implementar:
-        - botão Anterior;
-        - indicação da página atual e total de páginas;
-        - botão Próxima;
-        - bloqueio dos botões nos limites.
-      */}
+      <div className="paginacao">
+      <button
+      onClick={() => setPaginaAtual(paginaAtual - 1)}
+      disabled={paginaAtual === 1}
+      >
+       Anterior
+      </button>
+      <button
+      onClick={() => setPaginaAtual(paginaAtual + 1)}
+      disabled={paginaAtual === totalPaginas}
+      >
+      Próxima 
+      </button>
+      </div>
 
-      {/*
-        ETAPA 7 — INTEGRAÇÃO COM OS FILTROS
-        Ajuste busca, categoria e ordenação para manter a paginação
-        consistente quando os filtros forem alterados.
-      */}
 
       {/*
         ETAPA 8 — ACABAMENTO E TESTES
