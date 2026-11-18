@@ -126,15 +126,69 @@ function Login() {
 }
 
 function Cadastro() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
+  async function cadastrarUsuario(evento) {
+    evento.preventDefault();
+    if (senha !== confirmarSenha) {
+      setMensagem("As senhas nao coincidem.");
+      return;
+    }
+    setCarregando(true);
+    try {
+      const resposta = await fetch(
+        "http://localhost:3000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, email, senha })
+        });
+      const dados = await resposta.json();
+      setMensagem(resposta.ok ? dados.mensagem : dados.erro);
+      if (resposta.ok) {
+        setNome("");
+        setEmail("");
+        setSenha("");
+        setConfirmarSenha("");
+      }
+    } catch (erro) {
+      setMensagem("Erro de conexao com a API.");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   return (
     <section className="form-page">
       <div className="form-card">
         <span className="eyebrow">NOVO CLIENTE</span>
         <h1>Criar conta</h1>
-        <label>Nome<input placeholder="Seu nome"/></label>
-        <label>E-mail<input type="email" placeholder="voce@email.com"/></label>
-        <label>Senha<input type="password" placeholder="••••••••"/></label>
-        <button className="btn primary large" onClick={() => alert("TODO - ALUNO: cadastrar usuário no MongoDB")}>Cadastrar</button>
+        <form onSubmit={cadastrarUsuario}>
+          <label>Nome
+            <input value={nome} placeholder="Seu nome"
+              onChange={(e) => setNome(e.target.value)} required />
+          </label>
+          <label>E-mail
+            <input type="email" value={email} placeholder="voce@email.com"
+              onChange={(e) => setEmail(e.target.value)} required />
+          </label>
+          <label>Senha
+            <input type="password" value={senha} placeholder="••••••••"
+              onChange={(e) => setSenha(e.target.value)} required />
+          </label>
+          <label>Confirmar senha
+            <input type="password" value={confirmarSenha} placeholder="••••••••"
+              onChange={(e) => setConfirmarSenha(e.target.value)} required />
+          </label>
+          <button className="btn primary large" type="submit" disabled={carregando}>
+            {carregando ? "Cadastrando..." : "Cadastrar"}
+          </button>
+          <p>{mensagem}</p>
+        </form>
       </div>
     </section>
   );
