@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import Product from "./models/Product.js";
+import User from "./models/User.js"
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 const app = express();
@@ -121,7 +123,30 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.post("/api/auth/register", async (req, res) => {
-  res.status(501).json({ erro: "Cadastro ainda não implementado pelo aluno." });
+  try {
+   const {nome, email, senha} = req.body
+   if (!nome || !email || !senha){
+    return res.status(400).json({error: "nome, email e senha são obrigatórios!"})
+   }
+   if(senha < 6){
+    return res.status(400).json({error: "A senha deve ter no minimo 6 caracteres"})
+   }
+   if (!email.include("@") || !email.include(".")){
+    return res.status(400).json({ error: "Email inválido" })
+   }
+   const emailNormalizado = email.trim().toLowerCase()
+   const verificaEmail = await User.findOne({email: emailNormalizado})
+   if(verificaEmail){
+    res.status(409).json({error: "Esse email já está em uso. Tente outro"})
+   }
+   senhaCriptografada = bcrypt.hash(senha, 10)
+   const usuario = await User.create({nome: nome.trim(), email: emailNormalizado, senha: senhaCriptografada, perfil: "Cliente"})
+   res.status(200).json({menssage: "Cadastro realizado com sucesso", usuario: {id: usuario._id, nome: usuario.nome, email: usuario.email}})
+  } catch (error) {
+    res.status(500).json({mensage: "Erro ao cadastrar o usuario", errorName: error.name, errorMenssage: error.menssage})
+  }
+
+  res.status(501).json({ erro: "Cadastro pendente: ETAPAS 2 a 5." });
 });
 
 app.post("/api/pedidos", async (req, res) => {
@@ -131,4 +156,3 @@ app.post("/api/pedidos", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`SobrouVendi API: http://localhost:${PORT}`);
 });
-
