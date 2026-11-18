@@ -1,32 +1,18 @@
-# Backend — meusitevendas
+# Backend — Meu Site Vendas
 
-## 1. Instale as dependências
+API construída com Node.js, Express, Mongoose e MongoDB.
 
-```bash
+## CRUD de produtos concluído
+
+- GET `/api/produtos` — listar produtos
+- POST `/api/produtos` — cadastrar produto
+- GET `/api/produtos/:id` — buscar produto por ID
+- PUT `/api/produtos/:id` — atualizar produto
+- DELETE `/api/produtos/:id` — excluir produto
+
+## Executar
+
+```powershell
 npm install
-```
-
-## 2. Configure o MongoDB
-
-Copie `.env.example` para `.env` e ajuste `MONGODB_URI`.
-
-Você pode usar MongoDB local ou MongoDB Atlas.
-
-## 3. Popule o banco
-
-```bash
-npm run seed
-```
-
-Contas de demonstração:
-- Admin: `admin@meusitevendas.com` / `123456`
-- Cliente: `cliente@meusitevendas.com` / `123456`
-
-## 4. Execute
-
-```bash
 npm run dev
 ```
-
-## Exercícios
-As rotas ainda possuem pontos `TODO - ALUNO`. O objetivo é implementar a persistência, autenticação, CRUD, pedidos, estoque, filtros e paginação.
